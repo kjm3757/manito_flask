@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>관리자</title></head>
+<body>
+  <h2>전체 결과</h2>
+  <ul>
+    {% for name, info in assignments.items() %}
+      <li><strong>{{ name }}</strong> → 마니또: {{ info.manito }}, 미션: {{ info.mission }}</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>
