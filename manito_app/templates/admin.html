@@ -10,7 +10,7 @@
     {% if data.assignments %}
         <ul>
         {% for giver, receiver in data.assignments.items() %}
-            <li>{{ giver }} ➡ {{ receiver }}</li>
+            <li>{{ data.participants[giver] }} ➡ {{ receiver }}</li>
         {% endfor %}
         </ul>
     {% else %}

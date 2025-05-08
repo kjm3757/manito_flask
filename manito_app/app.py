@@ -17,31 +17,39 @@ def save_data(data):
 def index():
     data = load_data()
     if request.method == 'POST':
-        name = request.form['name'].strip()
-        if name not in data['participants']:
-            return render_template('index.html', error="유효하지 않은 아이디 입니다.")
-        return redirect(f'/select/{name}')
+        user_id = request.form['id'].strip()
+        if user_id not in data['participants']:
+            return render_template('index.html', error="유효하지 않은 ID 입니다.")
+        return redirect(f'/select/{user_id}')
 
     participant_count = len(data['assignments'])  # ← 할당된 사람 수
     return render_template('index.html', count=participant_count)
 
-@app.route('/select/<name>', methods=['GET'])
-def select(name):
+@app.route('/select/<user_id>', methods=['GET'])
+def select(user_id):
     data = load_data()
 
-    if name in data.get('assignments', {}):
-        return render_template('result.html', name=name, manito=data['assignments'][name]['manito'], mission=data['assignments'][name]['mission'])
+    real_name = data['participants'].get(user_id, "Unknown")
+
+    if user_id in data.get('assignments', {}):
+        return render_template('result.html', real_name=real_name,
+                                manito=data['assignments'][user_id]['manito'],
+                                mission=data['assignments'][user_id]['mission'])
 
     assigned_manitos = [v['manito'] for v in data['assignments'].values()]
     assigned_missions = [v['mission'] for v in data['assignments'].values()]
 
-    available_manitos = [(i+1, m) for i, m in enumerate(data['manitos']) if m != name and m not in assigned_manitos]
+    available_manitos = [(i+1, m) for i, m in enumerate(data['manitos']) if m != user_id and m not in assigned_manitos]
     available_missions = [(i+1, m) for i, m in enumerate(data['missions']) if m not in assigned_missions]
 
-    return render_template('select.html', name=name, manitos=available_manitos, missions=available_missions)
+    return render_template('select.html',
+                            real_name=real_name,
+                            user_id=user_id,
+                            manitos=available_manitos,
+                            missions=available_missions)
 
-@app.route('/submit/<name>', methods=['POST'])
-def submit(name):
+@app.route('/submit/<user_id>', methods=['POST'])
+def submit(user_id):
     data = load_data()
     manito_index = int(request.form['manito']) - 1
     mission_index = int(request.form['mission']) - 1
@@ -52,19 +60,22 @@ def submit(name):
     assigned_manitos = [v['manito'] for v in data['assignments'].values()]
     assigned_missions = [v['mission'] for v in data['assignments'].values()]
 
+    if selected_manito in assigned_manitos and selected_mission in assigned_missions:
+        return "다른 사용자가 이미 선택한 마니또/미션입니다. 마니또와 미션을 다시 선택해주세요.", 409
+
     if selected_manito in assigned_manitos:
         return "다른 사용자가 이미 선택한 마니또입니다. 마니또를 다시 선택해주세요.", 409
 
     if selected_mission in assigned_missions:
         return "다른 사용자가 이미 선택한 미션입니다. 미션을 다시 선택해주세요.", 409
 
-    data['assignments'][name] = {
+    data['assignments'][user_id] = {
         'manito': selected_manito,
         'mission': selected_mission
     }
     save_data(data)
 
-    return redirect(f'/select/{name}')
+    return redirect(f'/select/{user_id}')
 
 @app.route('/admin_login', methods=['POST'])
 def admin_login():
@@ -130,28 +141,28 @@ def reset():
     random.shuffle(missions)
 
     empty_data = {
-        "participants": [
-            "강주헌",
-            "권제경",
-            "김지경",
-            "김태희",
-            "문형찬",
-            "양동선",
-            "이우정",
-            "임민호",
-            "조영주",
-            "한수정",
-            "권연우",
-            "김소영",
-            "김정민",
-            "박하영",
-            "오지원",
-            "오하민",
-            "이건희",
-            "이지연",
-            "최승현",
-            "홍재우"
-        ],
+        "participants": {
+            "dks231" : "강주헌",
+            "big023" : "권제경",
+            "vih074" : "김지경",
+            "pys394" : "김태희",
+            "eaw263" : "문형찬",
+            "ohs045" : "양동선",
+            "cbf495" : "이우정",
+            "fiw410" : "임민호",
+            "bod795" : "조영주",
+            "clg028" : "한수정",
+            "sof156" : "권연우",
+            "fjo782" : "김소영",
+            "bsg495" : "김정민",
+            "xoh164" : "박하영",
+            "gho127" : "오지원",
+            "oeh462" : "오하민",
+            "qow906" : "이건희",
+            "xvm046" : "이지연",
+            "spj279" : "최승현",
+            "sby798" : "홍재우"
+        },
         "manitos": manitos ,
         "missions": missions,
         "assignments": {}

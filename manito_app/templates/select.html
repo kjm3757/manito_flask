@@ -5,9 +5,9 @@
     <title>마니또 & 미션 선택</title>
 </head>
 <body>
-    <h2>{{ name }}님, 마니또와 미션을 선택하세요.</h2>
-    <form method="post" action="/submit/{{ name }}">
-        <h3>ID 입력</h3>
+    <h2>{{ real_name }}님, 마니또와 미션을 선택하세요.</h2>
+    <form method="post" action="/submit/{{ user_id }}">
+        <h3>마니또 선택</h3>
         {% for idx, person in manitos %}
             <label>
                 <input type="radio" name="manito" value="{{ idx }}" required>
