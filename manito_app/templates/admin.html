@@ -1,12 +1,29 @@
 <!DOCTYPE html>
 <html>
-<head><meta charset="utf-8"><title>관리자</title></head>
+<head>
+    <title>관리자 페이지</title>
+</head>
 <body>
-  <h2>전체 결과</h2>
-  <ul>
-    {% for name, info in assignments.items() %}
-      <li><strong>{{ name }}</strong> → 마니또: {{ info.manito }}, 미션: {{ info.mission }}</li>
-    {% endfor %}
-  </ul>
+    <h1>🔐 관리자 페이지</h1>
+
+    <h2>마니또 결과</h2>
+    {% if data.assignments %}
+        <ul>
+        {% for giver, receiver in data.assignments.items() %}
+            <li>{{ giver }} ➡ {{ receiver }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>아직 마니또가 배정되지 않았습니다.</p>
+    {% endif %}
+
+    <hr>
+
+    <h2>데이터 초기화</h2>
+    <form action="/reset" method="post" onsubmit="return confirm('정말 초기화하시겠습니까?');">
+        <button type="submit">초기화</button>
+    </form>
+
+    <p><a href="/">← 메인 페이지로 돌아가기</a></p>
 </body>
 </html>
