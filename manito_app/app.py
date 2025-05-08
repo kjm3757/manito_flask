@@ -52,8 +52,11 @@ def submit(name):
     assigned_manitos = [v['manito'] for v in data['assignments'].values()]
     assigned_missions = [v['mission'] for v in data['assignments'].values()]
 
-    if selected_manito in assigned_manitos or selected_mission in assigned_missions:
-        return "다른 사용자가 이미 선택한 마니또/미션입니다. 다시 선택해주세요.", 409
+    if selected_manito in assigned_manitos:
+        return "다른 사용자가 이미 선택한 마니또입니다. 마니또를 다시 선택해주세요.", 409
+
+    if selected_mission in assigned_missions:
+        return "다른 사용자가 이미 선택한 미션입니다. 미션을 다시 선택해주세요.", 409
 
     data['assignments'][name] = {
         'manito': selected_manito,
