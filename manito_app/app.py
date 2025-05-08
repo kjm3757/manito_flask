@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, send_file
 import json, os, random
 
 app = Flask(__name__)
@@ -169,6 +169,15 @@ def reset():
     }
     save_data(empty_data)
     return redirect(url_for('admin'))
+
+@app.route('/download_data')
+def download_data():
+    return send_file(
+        'data.json',
+        mimetype='application/json',
+        as_attachment=True,
+        download_name='data.json'
+    )
 
 if __name__ == '__main__':
     app.run(debug=True)
