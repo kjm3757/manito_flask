@@ -4,26 +4,18 @@
     <title>관리자 페이지</title>
 </head>
 <body>
-    <h1>🔐 관리자 페이지</h1>
-
-    <h2>마니또 결과</h2>
-    {% if data.assignments %}
-        <ul>
-        {% for giver, receiver in data.assignments.items() %}
-            <li>{{ data.participants[giver] }} ➡ {{ receiver }}</li>
+    <h2>전체 결과 보기 ({{ count }}명 참여)</h2>
+    {% if message %}<p style="color:green">{{ message }}</p>{% endif %}
+    <ul>
+        {% for r in results %}
+            <li>{{ r.name }} → {{ r.manito }} ({{ r.mission }})</li>
         {% endfor %}
-        </ul>
-    {% else %}
-        <p>아직 마니또가 배정되지 않았습니다.</p>
-    {% endif %}
-
-    <hr>
-
-    <h2>데이터 초기화</h2>
-    <form action="/reset" method="post" onsubmit="return confirm('정말 초기화하시겠습니까?');">
-        <button type="submit">초기화</button>
+    </ul>
+    <form method="POST" action="/clear_results">
+        <label>비밀번호 확인:</label>
+        <input type="password" name="admin_password" required>
+        <button type="submit">결과 초기화</button>
     </form>
-
-    <p><a href="/">← 메인 페이지로 돌아가기</a></p>
+    <a href="/">처음으로 돌아가기</a>
 </body>
 </html>

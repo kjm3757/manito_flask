@@ -1,29 +1,62 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>마니또 & 미션 선택</title>
+    <title>마니또와 미션 선택</title>
+    <style>
+        .option-button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .selected {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
 </head>
 <body>
-    <h2>{{ real_name }}님, 마니또와 미션을 선택하세요.</h2>
-    <form method="post" action="/submit/{{ user_id }}">
-        <h3>마니또 선택</h3>
-        {% for idx, person in manitos %}
-            <label>
-                <input type="radio" name="manito" value="{{ idx }}" required>
-                {{ idx }}번
-            </label><br>
-        {% endfor %}
-
-        <h3>미션 선택</h3>
-        {% for idx, mission in missions %}
-            <label>
-                <input type="radio" name="mission" value="{{ idx }}" required>
-                {{ idx }}번
-            </label><br>
-        {% endfor %}
+    <h2>{{ name }}님, 마니또와 미션을 선택해주세요</h2>
+    <form method="POST" action="/submit_selection">
+        <div>
+            <label>마니또:</label><br>
+            {% for m in manitos %}
+                <button type="button" class="option-button" onclick="selectManito(this, '{{ m }}')">??</button>
+            {% endfor %}
+            <input type="hidden" name="manito" id="selected-manito" required>
+        </div>
         <br>
+
+        <div>
+            <label>미션:</label><br>
+            {% for mission in missions %}
+                <button type="button" class="option-button" onclick="selectMission(this, '{{ mission }}')">??</button>
+            {% endfor %}
+            <input type="hidden" name="mission" id="selected-mission" required>
+        </div>
+        <br>
+
         <button type="submit">확인</button>
     </form>
+
+    <script>
+        let currentManitoBtn = null;
+        let currentMissionBtn = null;
+
+        function selectManito(button, value) {
+            if (currentManitoBtn) currentManitoBtn.classList.remove("selected");
+            currentManitoBtn = button;
+            button.classList.add("selected");
+            document.getElementById("selected-manito").value = value;
+        }
+
+        function selectMission(button, value) {
+            if (currentMissionBtn) currentMissionBtn.classList.remove("selected");
+            currentMissionBtn = button;
+            button.classList.add("selected");
+            document.getElementById("selected-mission").value = value;
+        }
+    </script>
 </body>
 </html>
