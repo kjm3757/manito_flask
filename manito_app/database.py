@@ -1,13 +1,20 @@
 import firebase_admin
 from firebase_admin import credentials, db
 import random
+import json
+import os
 
-# Firebase credentials JSON 파일 경로
-cred = credentials.Certificate("./authentication/firebase_auth.json")
+firebase_auth_json = os.environ.get("FIREBASE_AUTH")
+
+if not firebase_auth_json:
+    raise ValueError("FIREBASE_AUTH 환경변수가 설정되지 않았습니다.")
+
+cred_dict = json.loads(firebase_auth_json)
+cred = credentials.Certificate(cred_dict)
+
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://manito-58ef9-default-rtdb.firebaseio.com/'
 })
-
 
 participants_ref = db.reference('participants')
 manitos_ref = db.reference('manitos')
